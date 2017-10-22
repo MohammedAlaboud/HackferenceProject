@@ -9,6 +9,7 @@ var nexmo = new Nexmo({
   apiSecret: '8e435c3198c2641c', 
 });
 
+
 var people = {};
 var count  = 0;
 var teamHasCpt = [false, false];
@@ -23,6 +24,7 @@ app.get('/propbloat', (req, res) => {
 `
 <button id=resetEl>reset</button>
 <button id=phaseEl>change phase</button>
+
 <script>
 resetEl.onclick = () => {
 	const xhr = new XMLHttpRequest;
@@ -62,7 +64,7 @@ app.get('/incoming-sms', (req, res) => {
 
 				person = {
 					team: playerTeam,
-					timestamp: Date.now()
+					timestamp: Date.now() / 1000 |0
 				};
 
 				if(!teamHasCpt[playerTeam]) {
@@ -86,8 +88,6 @@ app.get('/incoming-sms', (req, res) => {
 			
 				people[req.query.msisdn] = person;
 
-        fs.writeFile("number.txt", JSON.stringify(people));
-
 			}
       break;
 
@@ -98,10 +98,10 @@ app.get('/incoming-sms', (req, res) => {
 		 		events.push({
 		 			team: person.team,
 		 			type: req.query.keyword, 
-          timestamp: Date.now()
+          timestamp: Date.now() / 1000 |0
 		 		});
 
-        fs.writeFile("number.txt", JSON.stringify(events));
+        fs.writeFile("number.txt", JSON.stringify({ eventList: events }));
 		 	}
 
 		 	break;
