@@ -1,17 +1,15 @@
-var Express = require('express');
+var express = require('express');
 var fs = require('fs');
 
-let app = Express();
+let app = express();
 
 var Nexmo = require("nexmo");
-
 var nexmo = new Nexmo({
   apiKey: '598d80ad',
   apiSecret: '8e435c3198c2641c', 
 });
 
 var people = {};
-
 var count  = 0;
 var teamHasCpt = [false, false];
 var phase = 'assigning-teams';
@@ -56,9 +54,7 @@ app.get('/incoming-sms', (req, res) => {
 //	req.query.msisdn = Math.random() * 1000000 |0;
 
 	switch(phase) {
-
 		case 'assigning-teams':
-
 			var sentText = ''
 
 			if(!people[req.query.msisdn]) {
@@ -70,31 +66,18 @@ app.get('/incoming-sms', (req, res) => {
 				};
 
 				if(!teamHasCpt[playerTeam]) {
-
 					person.isCpt = true;
 					teamHasCpt[playerTeam] = false;
 
-					if(person.team === 0){
-
-						sentText = 'YOU ARE BLUE TEAM CAPTAIN! COME UP NOW!!!'
-
-					} else {
-
-						sentText = 'YOU ARE RED TEAM CAPTAIN! COME UP NOW!!!'
-
-					}
+          sentText = person.team === 0 ?
+              'YOU ARE BLUE TEAM CAPTAIN! COME UP NOW!!!'
+            : 'YOU ARE RED TEAM CAPTAIN! COME UP NOW!!!'
 
 				} else {
 
-					if(person.team === 0){
-						
-						sentText = 'YOU ARE IN BLUE TEAM'
-
-					} else {
-
-						sentText = 'YOU ARE IN RED TEAM'
-
-					}
+          sentText = person.team === 0 ?
+              'YOU ARE IN BLUE TEAM'
+						: 'YOU ARE IN RED TEAM'
 
 				}
 
@@ -103,30 +86,26 @@ app.get('/incoming-sms', (req, res) => {
 			
 				people[req.query.msisdn] = person;
 
-		  		fs.writeFile("number.txt", JSON.stringify(people));
+        fs.writeFile("number.txt", JSON.stringify(people));
 
 			}
-
-		  	
-		  	break;
+      break;
 
 		 case 'playing':
-
-		 	console.log("REACHED")
-
 		 	if(people[req.query.msisdn]) {
 		 		var person = people[req.query.msisdn];
 
 		 		events.push({
 		 			team: person.team,
 		 			type: req.query.keyword, 
-		 		})
+          timestamp: Date.now()
+		 		});
+
+        fs.writeFile("number.txt", JSON.stringify(events));
 		 	}
 
-			fs.writeFile("number.txt", JSON.stringify(events));
-
 		 	break;
-	  	}
+    }
 
 	  res.sendStatus(200)
 
