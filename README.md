@@ -25,4 +25,4 @@ Red team simulated text inputs:
 - **I** DOGS
 - **O** TROLL
 
-### Check out https://github.com/rosanna20736/HackyBird for more detail!
+### Check out https://github.com/rosanna20736/HackyBird for more details!
